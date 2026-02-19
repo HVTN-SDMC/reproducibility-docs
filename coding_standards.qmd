@@ -3,6 +3,7 @@ title: "R Coding Standards for Reproducibility"
 format:
   revealjs:
     self-contained: true
+    css: styles.css
 execute:
   echo: true
   eval: false
@@ -21,29 +22,37 @@ execute:
 
 ## How `renv` manages packages
 
-- **Global cache**:
+- **Global package cache**:
   - Stores one copy of each package version on your machine
-  - Shared across *R* projects
+  - Shared across *R* projects for a given user
+  - Can be configured to be shared across users on servers
 - **Project library** (`renv/library/`):
-  - Contains links to packages in the cache
-  - Is project-specific
+  - Is project-specific and contains links to packages in the cache
   - Should never be committed to git
 
 This design saves disk space and ensures isolation between projects.
 
-## Steps to initialize `renv` in an R project
+## How to start using `renv` in an R project
 
-1.  Run `install.packages("renv")`
-2.  If project includes many files with no *R* code, consider adding them to `.renvignore` at the top level
-    - E.g., add `figs/**` to ignore the folder `figs` and all its content
-3.  Run `renv::init()` to store direct and indirect dependencies in `renv` package cache and add links to project library
-4. Commit the suggested 5 files and `.renvignore` (if present) to git
+1.  Run `install.packages("renv")`  
+2.  `renv::init()` scans project files (`.R`, `.Rmd`, `.qmd`, `.Rnw`) for required packages and their dependencies. Then it
+    - Creates the project library `renv/library/`
+    - Installs required packages into the cache (`renv::paths$cache()` gives the cache path)
+    - Writes the lockfile `renv.lock` that contains *R* and *R* package metadata recording the state of the project library (and used to reproduce package environment by others or future self)
+  
+## How to start using `renv` in an R project
+3. Commit the following to git:
+    - `renv.lock`
+    - `.Rprofile`
+    - `renv/activate.R`
+        - Ensures `renv` auto-activates when the project opens
+    - `renv/settings.json`
+        - Ensures `renv` behaves the same for all collaborators
 
-## After `renv` is initialized
+## Maintaining `renv`
 
-- Use `renv::install("pkgname")` to install a new package in the project library
-- Use `renv::update()` to update all packages in the project library
-- After installing or updating a package, use `renv::snapshot()` to update the lockfile `renv.lock` that contains *R* and *R* package metadata recording the state of the project library (and used to reproduce package environment by others or future self)
+- Use `renv::install("pkgname")` to install a new package or update an installed package
+- After installing or updating one or multiple packages, use `renv::snapshot()` to update `renv.lock`
 
 ## Steps to create/update project library after `renv.lock` has been created/updated (e.g., by a collaborator)
 
@@ -62,3 +71,7 @@ This design saves disk space and ensures isolation between projects.
 - Don't edit `renv.lock` manually
 - Don't commit `renv/library` to git
     - `renv::init()` handles this automatically by including `library/` in `renv/.gitignore`
+    
+## Advanced notes
+- If project includes many files with no *R* code, consider adding them to `.renvignore` at the top level
+    - E.g., add `figs/**` to ignore the folder `figs` and all its content

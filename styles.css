@@ -1,0 +1,8 @@
+/* Reduce line spacing on slides */
+.reveal p {
+  line-height: 1.1;
+}
+
+.reveal li {
+  line-height: 1.1;
+}
