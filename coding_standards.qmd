@@ -44,6 +44,17 @@ This design saves disk space and ensures isolation between projects.
 - We then explain how to use renv for routine package management. If the goal is to reproduce a study, this step is not required
 
 
+## 4 key `renv` functions
+
+`renv` offers a wide set of function calls, but we will use only 4 functions to achieve all tasks:
+
+- `renv::init()`
+- `renv::restore()`
+- `renv::install()`
+- `renv::snapshot()`
+
+
+
 ## Scenario 1: Using `renv` for the first time {.compact}
 
 - Run `renv::init()`. It
@@ -82,16 +93,6 @@ Note: when you start R in a folder or start a project in RStudio, if the folder/
 2) renv::install can also install specific versions of packages.]{style="font-size: 0.6em"}
 
 
-
-
-## Key `renv` functions
-
-`renv` offers a wide set of function calls. This guideline use a minimum set of function calls to achieve all tasks:
-
-- `renv::init()`
-- `renv::restore()`
-- `renv::install()`
-- `renv::snapshot()`
 
 
 ## Limitation of `renv`

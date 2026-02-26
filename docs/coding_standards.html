@@ -1030,6 +1030,16 @@ margin-right: 0; }
 <li><p>We then explain how to use renv for routine package management. If the goal is to reproduce a study, this step is not required</p></li>
 </ul>
 </section>
+<section id="key-renv-functions" class="slide level2">
+<h2>4 key <code>renv</code> functions</h2>
+<p><code>renv</code> offers a wide set of function calls, but we will use only 4 functions to achieve all tasks:</p>
+<ul>
+<li><code>renv::init()</code></li>
+<li><code>renv::restore()</code></li>
+<li><code>renv::install()</code></li>
+<li><code>renv::snapshot()</code></li>
+</ul>
+</section>
 <section id="scenario-1-using-renv-for-the-first-time" class="slide level2 compact">
 <h2>Scenario 1: Using <code>renv</code> for the first time</h2>
 <ul>
@@ -1068,16 +1078,6 @@ margin-right: 0; }
 <li><p>If a collaborator updates <code>renv.lock</code>, call <code>renv::restore()</code> to sync your project library with the new <code>renv.lock</code></p></li>
 </ol>
 <p><span style="font-size: 0.6em">Note: 1) Using base::install.packages or remotes::install_github or other methods to install packages may have undesirable effects and are not recommended. 2) renv::install can also install specific versions of packages.</span></p>
-</section>
-<section id="key-renv-functions" class="slide level2">
-<h2>Key <code>renv</code> functions</h2>
-<p><code>renv</code> offers a wide set of function calls. This guideline use a minimum set of function calls to achieve all tasks:</p>
-<ul>
-<li><code>renv::init()</code></li>
-<li><code>renv::restore()</code></li>
-<li><code>renv::install()</code></li>
-<li><code>renv::snapshot()</code></li>
-</ul>
 </section>
 <section id="limitation-of-renv" class="slide level2">
 <h2>Limitation of <code>renv</code></h2>
