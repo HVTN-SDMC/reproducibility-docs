@@ -1026,9 +1026,8 @@ margin-right: 0; }
 <h2>Using renv</h2>
 <ul>
 <li><p>In the following we assume the <code>renv</code> package is installed. If not, run <code>install.packages(&quot;renv&quot;)</code></p></li>
-<li><p><code>renv</code> offers a wide set of APIs. The following instructions try to use the minimum set of function calls to achieve all tasks</p></li>
 <li><p>We first cover two scenarios to start using renv</p></li>
-<li><p>We then explain how to use renv for routine package management</p></li>
+<li><p>We then explain how to use renv for routine package management. If the goal is to reproduce a study, this step is not required</p></li>
 </ul>
 </section>
 <section id="scenario-1-using-renv-for-the-first-time" class="slide level2 compact">
@@ -1038,38 +1037,41 @@ margin-right: 0; }
 <ul>
 <li>Scans project files (<code>.R</code>, <code>.Rmd</code>, <code>.qmd</code>, <code>.Rnw</code>) for required packages and their dependencies</li>
 <li>Creates the folder <code>renv/library/</code> and installs packages (or links) into the project library</li>
-<li>Creates a manifest file <code>renv.lock</code>, which contains <em>R</em> and <em>R</em> package metadata recording the state of the project library (and used to reproduce project library by others or future self)</li>
+<li>Creates <code>renv.lock</code>, which contains <em>R</em> and <em>R</em> package metadata recording the state of the project library (and used to reproduce project library by others or future self)</li>
 <li>Creates <code>.Rprofile</code> and <code>renv/activate.R</code></li>
 </ul></li>
 <li>Commit <code>renv.lock</code> to git</li>
 </ul>
 <p><em>Key idea:</em> <code>renv.lock</code> is the single source of truth</p>
 </section>
-<section id="scenario-2-working-with-an-existing-r-project-that-contains-renv.lock" class="slide level2">
-<h2>Scenario 2: Working with an existing R project that contains <code>renv.lock</code></h2>
+<section id="scenario-2-working-with-an-project-that-contains-renv.lock" class="slide level2 compact">
+<h2>Scenario 2: Working with an project that contains <code>renv.lock</code></h2>
 <ul>
-<li>Run <code>renv::restore()</code>. It
+<li>Run <code>renv::restore()</code>. It will
 <ul>
-<li>Installs packages described <code>renv.lock</code> into <code>renv/library</code></li>
-<li>Creates <code>.Rprofile</code> and <code>renv/activate.R</code></li>
+<li>Creates the folder <code>renv/library/</code> and installs packages (or links) described in <code>renv.lock</code> into the project library. This process may take a long time.</li>
+<li>Creates <code>.Rprofile</code> and <code>renv/activate.R</code> (overwrites if files already exist)</li>
 </ul></li>
 </ul>
+<p>Note: when you start R in a folder or start a project in RStudio, if the folder/project already contains <code>.Rprofile</code> and <code>renv/activate.R</code>, it will automatically start installing packages (or links) described in <code>renv.lock</code> into the project library. The process may take a long time.</p>
 </section>
-<section id="using-renv-for-routine-package-management" class="slide level2 compact">
+<section id="using-renv-for-routine-package-management" class="slide level2 compact smaller">
 <h2>Using renv for routine package management</h2>
 <ol type="1">
-<li><p>When a project folder has <code>.Rprofile</code> and <code>renv/activate.R</code>, R loads the project library on startup. This ensures that the right versions of packages are used</p></li>
+<li><p>When a project folder has <code>.Rprofile</code> and <code>renv/activate.R</code>, R configures the session to use renv/library on startup. This ensures that the right versions of packages are used</p></li>
 <li><p>To install or update new packages from either CRAN (pkg1) or github (user/pkg2), run</p>
 <ul>
 <li><code>renv::install(&quot;pkg1&quot;); renv::install(&quot;user/pkg2&quot;)</code> or</li>
 <li><code>renv::install(c(&quot;pkg1&quot;, &quot;user/pkg2&quot;))</code></li>
 </ul></li>
 <li><p>To update <code>renv.lock</code> with package version info, run <code>renv::snapshot()</code></p></li>
+<li><p>If a collaborator updates <code>renv.lock</code>, call <code>renv::restore()</code> to sync your project library with the new <code>renv.lock</code></p></li>
 </ol>
-<p><span style="font-size: 0.8em;">Note: renv::install can also install specific versions of packages.</span></p>
+<p><span style="font-size: 0.6em">Note: 1) Using base::install.packages or remotes::install_github or other methods to install packages may have undesirable effects and are not recommended. 2) renv::install can also install specific versions of packages.</span></p>
 </section>
 <section id="key-renv-functions" class="slide level2">
 <h2>Key <code>renv</code> functions</h2>
+<p><code>renv</code> offers a wide set of function calls. This guideline use a minimum set of function calls to achieve all tasks:</p>
 <ul>
 <li><code>renv::init()</code></li>
 <li><code>renv::restore()</code></li>

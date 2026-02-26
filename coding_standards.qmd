@@ -39,11 +39,9 @@ This design saves disk space and ensures isolation between projects.
 
 - In the following we assume the `renv` package is installed. If not, run `install.packages("renv")`  
 
-- `renv` offers a wide set of APIs. The following instructions try to use the minimum set of function calls to achieve all tasks
-
 - We first cover two scenarios to start using renv
 
-- We then explain how to use renv for routine package management
+- We then explain how to use renv for routine package management. If the goal is to reproduce a study, this step is not required
 
 
 ## Scenario 1: Using `renv` for the first time {.compact}
@@ -51,23 +49,24 @@ This design saves disk space and ensures isolation between projects.
 - Run `renv::init()`. It
   - Scans project files (`.R`, `.Rmd`, `.qmd`, `.Rnw`) for required packages and their dependencies
   - Creates the folder `renv/library/` and installs packages (or links) into the project library
-  - Creates a manifest file `renv.lock`, which contains *R* and *R* package metadata recording the state of the project library (and used to reproduce project library by others or future self)
+  - Creates `renv.lock`, which contains *R* and *R* package metadata recording the state of the project library (and used to reproduce project library by others or future self)
   - Creates `.Rprofile` and `renv/activate.R`
 - Commit `renv.lock` to git
   
 *Key idea:* `renv.lock` is the single source of truth
 
 
-## Scenario 2: Working with an existing R project that contains `renv.lock`
+## Scenario 2: Working with an project that contains `renv.lock` {.compact}
 
-- Run `renv::restore()`. It
-  - Installs packages described `renv.lock` into `renv/library` 
-  - Creates `.Rprofile` and `renv/activate.R`
+- Run `renv::restore()`. It will
+  - Creates the folder `renv/library/` and installs packages (or links) described in `renv.lock` into the project library. This process may take a long time.
+  - Creates `.Rprofile` and `renv/activate.R` (overwrites if files already exist)
 
+Note: when you start R in a folder or start a project in RStudio, if the folder/project already contains `.Rprofile` and `renv/activate.R`, it will automatically start installing packages (or links) described in `renv.lock` into the project library. The process may take a long time.
 
-## Using renv for routine package management  {.compact}
+## Using renv for routine package management  {.compact .smaller}
 
-1. When a project folder has `.Rprofile` and `renv/activate.R`, R loads the project library on startup. This ensures that the right versions of packages are used
+1. When a project folder has `.Rprofile` and `renv/activate.R`, R configures the session to use renv/library on startup. This ensures that the right versions of packages are used
 
 2. To install or update new packages from either CRAN (pkg1) or github (user/pkg2), run
     - `renv::install("pkg1"); renv::install("user/pkg2")` or
@@ -75,12 +74,20 @@ This design saves disk space and ensures isolation between projects.
 
 3. To update `renv.lock` with package version info, run `renv::snapshot()`
 
-[ Note:  renv::install can also install specific versions of packages.]{style="font-size: 0.8em;"}
+4. If a collaborator updates `renv.lock`, call `renv::restore()` to sync your project library with the new `renv.lock`
+
+
+[ Note: 
+1) Using base::install.packages or remotes::install_github or other methods to install packages may have undesirable effects and are not recommended. 
+2) renv::install can also install specific versions of packages.]{style="font-size: 0.6em"}
 
 
 
 
 ## Key `renv` functions
+
+`renv` offers a wide set of function calls. This guideline use a minimum set of function calls to achieve all tasks:
+
 - `renv::init()`
 - `renv::restore()`
 - `renv::install()`
