@@ -96,6 +96,10 @@ Note: when you start R in a folder or start a project in RStudio, if the folder/
 2) renv::install can also install specific versions of packages.]{style="font-size: 0.6em"}
 
 
+## Troubleshooting
+
+We recommend using the directory containing renv.lock as the working directory to avoid certain errors. If unexpected errors occur, check if the home directory contains .Rprofile, renv.lock, and renv/.
+
 
 
 ## Limitation of `renv`
