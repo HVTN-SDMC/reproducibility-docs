@@ -1085,7 +1085,15 @@ HVTN Reproducibility Core
 <li><p>To update <code>renv.lock</code> with package version info, run <code>renv::snapshot()</code></p></li>
 <li><p>If a collaborator updates <code>renv.lock</code>, call <code>renv::restore()</code> to sync your project library with the new <code>renv.lock</code></p></li>
 </ol>
-<p><span style="font-size: 0.6em">Note: 1) Using base::install.packages or remotes::install_github or other methods to install packages may have undesirable effects and are not recommended. 2) renv::install can also install specific versions of packages.</span></p>
+<p><span style="font-size: 0.6em">Note: 1) Using base::install.packages or remotes::install_github or other methods to install packages may have undesirable effects and are not recommended. 2) renv::install can also install specific versions of packages, e.g. renv::install(“https://cran.r-project.org/src/contrib/Archive/kyotil/kyotil_2024.7-31.tar.gz”)</span></p>
+</section>
+<section id="troubleshooting" class="slide level2">
+<h2>Troubleshooting</h2>
+<ul>
+<li>We recommend using the directory containing renv.lock as the working directory to avoid certain errors.</li>
+<li>If unexpected errors occur, check if the home directory contains .Rprofile, renv.lock, and renv/.</li>
+<li>If you encounter warnings like: curl: (22), the requested URL returned error: 403 rate limit exceeded. The solution is to first authenticate with your personal github access token by running the following in R:</li>
+</ul>
 </section>
 <section id="limitation-of-renv" class="slide level2">
 <h2>Limitation of <code>renv</code></h2>
