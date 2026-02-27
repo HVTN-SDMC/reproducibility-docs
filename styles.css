@@ -17,3 +17,18 @@
 .reveal section.compact ol li {
   margin-top: 0.1em;
 }
+
+/* Compact + Smaller combined */
+.reveal section.compact-smaller {
+  font-size: 0.8em;
+}
+
+.reveal section.compact-smaller p,
+.reveal section.compact-smaller li {
+  line-height: 0.9;
+}
+
+.reveal section.compact-smaller ul li,
+.reveal section.compact-smaller ol li {
+  margin-top: 0.1em;
+}

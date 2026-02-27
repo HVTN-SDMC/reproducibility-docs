@@ -1,6 +1,6 @@
 ---
-title: "Using renv for Reproducibility"
-author: ["HVTN Reproducibility Core"]
+title: "Using `renv` for Reproducibility"
+author: ["HVTN SDMC Reproducible Science Core"]
 date: today
 date-format: long
 format: 
@@ -36,15 +36,13 @@ execute:
 
 This design saves disk space and ensures isolation between projects.
 
-
-
-## Using renv
+## Using `renv`
 
 - In the following we assume the `renv` package is installed. If not, run `install.packages("renv")`  
 
-- We first cover two scenarios to start using renv
+- We first cover two scenarios to start using `renv`
 
-- We then explain how to use renv for routine package management. If the goal is to reproduce a study, this step is not required
+- We then explain how to use `renv` for routine package management. If the goal is to reproduce a study, this step is not required.
 
 
 ## 4 key `renv` functions
@@ -57,32 +55,31 @@ This design saves disk space and ensures isolation between projects.
 - `renv::snapshot()`
 
 
+## Scenario 1: First-time use of `renv` in a project {.compact}
 
-## Scenario 1: Using `renv` for the first time {.compact}
-
-- Run `renv::init()`. It
-  - Scans project files (`.R`, `.Rmd`, `.qmd`, `.Rnw`) for required packages and their dependencies
-  - Creates the folder `renv/library/` and installs packages (or links) into the project library
-  - Creates `renv.lock`, which contains *R* and *R* package metadata recording the state of the project library (and used to reproduce project library by others or future self)
-  - Creates `.Rprofile` and `renv/activate.R`
-- Commit `renv.lock` to git
+1. Run `renv::init()`. It
+    - Scans project files (`.R`, `.Rmd`, `.qmd`, `.Rnw`) for required packages and their dependencies
+    - Creates the folder `renv/library/` and installs packages (or links) into the project library
+    - Creates `renv.lock`, which contains *R* and *R* package metadata recording the state of the project library (and used to reproduce project library by others or future self)
+    - Creates `.Rprofile` and `renv/activate.R`
+2. Commit `renv.lock` to git
   
 *Key idea:* `renv.lock` is the single source of truth
 
 
-## Scenario 2: Working with an project that contains `renv.lock` {.compact}
+## Scenario 2: Start of work in a project that contains `renv.lock` {.compact}
 
-- Run `renv::restore()`. It will
-  - Creates the folder `renv/library/` and installs packages (or links) described in `renv.lock` into the project library. This process may take a long time.
+- Run `renv::restore()`. It
+  - Creates the folder `renv/library/` and installs packages (or links) recorded in `renv.lock` into the project library. This step may take a long time.
   - Creates `.Rprofile` and `renv/activate.R` (overwrites if files already exist)
 
-Note: when you start R in a folder or start a project in RStudio, if the folder/project already contains `.Rprofile` and `renv/activate.R`, it will automatically start installing packages (or links) described in `renv.lock` into the project library. The process may take a long time.
+*Note:* when you start *R* in a folder or start a project in RStudio, if the folder/project already contains `.Rprofile` and `renv/activate.R`, it will automatically start installing packages (or links) recorded in `renv.lock` into the project library. This step may take a long time.
 
-## Using renv for routine package management  {.compact .smaller}
+## Using `renv` for routine package management  {.compact-smaller}
 
-1. When a project folder has `.Rprofile` and `renv/activate.R`, R configures the session to use renv/library on startup. This ensures that the right versions of packages are used
+1. When a project folder contains `.Rprofile` and `renv/activate.R`, *R* configures the session to use `renv/library` on startup. This ensures that the right versions of packages are used
 
-2. To install or update new packages from either CRAN (pkg1) or github (user/pkg2), run
+2. To install or update new packages from either CRAN (`pkg1`) or GitHub (`user/pkg2`), run
     - `renv::install("pkg1"); renv::install("user/pkg2")` or
     - `renv::install(c("pkg1", "user/pkg2"))`
 
@@ -91,18 +88,18 @@ Note: when you start R in a folder or start a project in RStudio, if the folder/
 4. If a collaborator updates `renv.lock`, call `renv::restore()` to sync your project library with the new `renv.lock`
 
 
-[ Note: 
-1) Using base::install.packages or remotes::install_github or other methods to install packages may have undesirable effects and are not recommended. 
-2) renv::install can also install specific versions of packages, e.g. renv::install("https://cran.r-project.org/src/contrib/Archive/kyotil/kyotil_2024.7-31.tar.gz")
-]{style="font-size: 0.6em"}
+*Notes:* 
+
+- Using `base::install.packages()`, `remotes::install_github()` or other methods to install packages may have undesirable effects and is not recommended
+- `renv::install()` can also install specific versions of packages, e.g., `renv::install("https://cran.r-project.org/src/contrib/Archive/kyotil/kyotil_2024.7-31.tar.gz")`
+
 
 
 ## Troubleshooting
 
-- We recommend using the directory containing renv.lock as the working directory to avoid certain errors. 
-- If unexpected errors occur, check if the home directory contains .Rprofile, renv.lock, and renv/.
-- If you encounter warnings like: curl: (22), the requested URL returned error: 403 rate limit exceeded. The solution is to first authenticate with your personal github access token by running the following in R:
-
+- We recommend using the folder containing `renv.lock` as the working directory to avoid certain errors
+- If unexpected errors occur, check if the home directory contains `.Rprofile`, `renv.lock`, and `renv/`
+- If you encounter warnings such as `curl: (22), the requested URL returned error: 403 rate limit exceeded`, the solution is to first authenticate with your personal GitHub access token by running the following in *R*:
 
 
 
@@ -115,22 +112,24 @@ Note: when you start R in a folder or start a project in RStudio, if the folder/
 
 ## Advanced topics
 
-In the following we will cover some more advanced topics related to renv.
+In the following we will cover some more advanced topics related to `renv`.
 
-## .renvignore
+## `.renvignore`
+
 If project includes *R* code that should or can be ignored by `renv`, add respective files/folders to `.renvignore` at the top level
+
 - E.g., add `dev/**` to ignore the folder `dev` and all its content
 
 
-## renv.lock at different levels of code hierarchy {.compact .smaller}
+## `renv.lock` at different levels of code hierarchy {.compact .smaller}
 
-- The repo CoVPN/correlates_reporting2 contains multiple modules (e.g., cor_coxph, cor_threshold) for multiple types of analyses. We recommend either using module-level project library (e.g., cor_coxph/renv.lock) or project-level libary (e.g. cor_threshold/sanofi_stage2/renv.lock)
+- The repo `CoVPN/correlates_reporting2` contains multiple modules (e.g., `cor_coxph`, `cor_threshold`) for multiple types of analyses. We recommend either using module-level project library (e.g., `cor_coxph/renv.lock`) or project-level library (e.g., `cor_threshold/sanofi_stage2/renv.lock`)
 
-- To use module-level project library, some changes are needed so that rendering Rmd reports uses module-level library instead of roor-level libary. Take cor_coxph as an example
-  - Edit _build_chapeter.sh (see cor_coxph for example)
-  - Copy index_cor.Rmd and book.bib from repo root to cor_coxph/
-  - Move _bookdown_cor_coxph.yml from repo root to cor_coxph/
+- To use module-level project library, some changes are needed so that rendering `Rmd` reports uses module-level library instead of root-level library. Take `cor_coxph` as an example
+  - Edit _build_chapeter.sh (see `cor_coxph` for example)
+  - Copy `index_cor.Rmd` and `book.bib` from repo root to `cor_coxph/`
+  - Move `_bookdown_cor_coxph.yml` from repo root to `cor_coxph/`
   - Update all files at module level to replace module name by '.', e.g.
-    - res = knitr::knit_child(c(here::here('cor_coxph', 'additional_model.Rmd'))) becomes
-    - res = knitr::knit_child(c(here::here('.', 'additional_model.Rmd'))) 
+    - `res = knitr::knit_child(c(here::here('cor_coxph', 'additional_model.Rmd')))` becomes
+    - `res = knitr::knit_child(c(here::here('.', 'additional_model.Rmd')))` 
 
